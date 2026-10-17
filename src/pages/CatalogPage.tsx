@@ -188,6 +188,7 @@ export default function CatalogPage() {
       .from('products')
       .select('*')
       .eq('active', true)
+      .neq('product_type', 'gold_nuggets') // Excludes gold nuggets from the catalog query
       .order('sort_order')
       .then(({ data }) => {
         setProducts((data as DBProduct[] || []).map(toProduct));
