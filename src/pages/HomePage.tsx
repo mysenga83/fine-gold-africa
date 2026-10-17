@@ -11,7 +11,6 @@ const TICKER_ITEMS = [
   { label: '24K Gold Spot', suffix: '/oz' },
   { label: '24K Gold Spot', suffix: '/g' },
   { label: 'Gold Bars 99.99% Purity' },
-  { label: 'Gold Nuggets 98.5% Avg Purity' },
   { label: 'Gold Dust 96–98% Purity' },
   { label: 'Bulk Supply — Min 1kg' },
   { label: 'Certified Ethical Sourcing' },
@@ -59,7 +58,6 @@ function GoldTicker({ pricePerOz, pricePerGram }: { pricePerOz: number; pricePer
     `24K GOLD SPOT  $${pricePerOz.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/oz`,
     `24K GOLD SPOT  $${pricePerGram.toFixed(4)}/g`,
     'GOLD BARS  99.99% PURITY',
-    'GOLD NUGGETS  98.5% AVG PURITY',
     'GOLD DUST  96–98% PURITY',
     'BULK SUPPLY — MIN 1KG',
     'CERTIFIED ETHICAL SOURCING',
@@ -307,10 +305,9 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-4xl text-foreground">Our Product Showcase</h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto">
             {[
               { name: 'Gold Bars', sub: 'Refined Bullion · 99.5–99.99%', img: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/j.jpg' },
-              { name: 'Gold Nuggets', sub: 'Raw Alluvial · 96–99%', img: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/b.jpg' },
               { name: 'Gold Dust', sub: 'Alluvial Composition · 96–98%', img: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/g.jpg' },
               { name: 'Bulk Supply', sub: 'Industrial Volume · Min 1kg', img: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/o.jpg' },
             ].map((p, i) => (
@@ -323,9 +320,9 @@ export default function HomePage() {
                 <div className="aspect-square overflow-hidden">
                   <img src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <div className="p-3">
-                  <p className="text-sm font-semibold text-foreground">{p.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{p.sub}</p>
+                <div className="p-4">
+                  <p className="text-base font-semibold text-foreground">{p.name}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{p.sub}</p>
                 </div>
               </Link>
             ))}
