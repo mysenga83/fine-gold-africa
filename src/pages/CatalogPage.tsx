@@ -8,7 +8,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import type { Product } from '@/types/types';
 import { supabase } from '@/db/supabase';
 
-// Products are loaded from Supabase; this interface mirrors the DB columns
 interface DBProduct {
   id: string;
   product_type: string;
@@ -22,6 +21,37 @@ interface DBProduct {
   active: boolean;
   sort_order: number;
 }
+
+// Fallback products so the page never displays "No products available yet"
+const FALLBACK_PRODUCTS: (Product & { videoUrl?: string })[] = [
+  {
+    id: 'gold_bars',
+    name: 'Gold Bars',
+    subtitle: 'Refined Bullion',
+    description: 'High-purity refined gold bullion bars, securely assayed and certified for international institutional markets and private holdings.',
+    purityRange: '99.5–99.99%',
+    imageUrl: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/j.jpg',
+    minWeightGrams: 1000,
+  },
+  {
+    id: 'gold_dust',
+    name: 'Gold Dust',
+    subtitle: 'Alluvial Composition',
+    description: 'Raw alluvial gold dust ethically extracted and sourced directly from verified mining partners across the East African region.',
+    purityRange: '96–98%',
+    imageUrl: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/g.jpg',
+    minWeightGrams: 500,
+  },
+  {
+    id: 'bulk_supply',
+    name: 'Bulk Supply',
+    subtitle: 'Industrial Volume',
+    description: 'Large-scale industrial volume allocations designed for accredited commodity trading desks, refineries, and major corporate buyers.',
+    purityRange: '96–99.99%',
+    imageUrl: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/o.jpg',
+    minWeightGrams: 1000,
+  },
+];
 
 function toProduct(p: DBProduct): Product & { videoUrl?: string } {
   return {
@@ -128,20 +158,17 @@ function ProductCard({ product }: {
   product: Product & { videoUrl?: string };
 }) {
   const { user } = useAuth();
-  // Only admin users (email ends with mysenga83.com) can see the video toggle
   const isAdmin = !!user?.email?.endsWith('mysenga83.com');
   const [showVideo, setShowVideo] = useState(false);
 
   return (
     <div className="gold-border bg-card h-full flex flex-col gold-glow-hover transition-all duration-300 opacity-0 intersect:opacity-100">
-      {/* Media */}
       <div className="aspect-[4/3] overflow-hidden relative">
         {showVideo ? (
           <VideoPlayer remoteUrl={product.videoUrl} />
         ) : (
           <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
         )}
-        {/* Video toggle: only visible to admin */}
         {isAdmin && (
           <button
             onClick={() => setShowVideo(v => !v)}
@@ -180,7 +207,7 @@ function ProductCard({ product }: {
 }
 
 export default function CatalogPage() {
-  const [products, setProducts] = useState<(Product & { videoUrl?: string })[]>([]);
+  const [products, setProducts] = useState<(Product & { videoUrl?: string })[]>(FALLBACK_PRODUCTS);
   const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
@@ -188,17 +215,18 @@ export default function CatalogPage() {
       .from('products')
       .select('*')
       .eq('active', true)
-      .neq('product_type', 'gold_nuggets') // Excludes gold nuggets from the catalog query
+      .neq('product_type', 'gold_nuggets')
       .order('sort_order')
       .then(({ data }) => {
-        setProducts((data as DBProduct[] || []).map(toProduct));
+        if (data && data.length > 0) {
+          setProducts((data as DBProduct[]).map(toProduct));
+        }
         setProductsLoading(false);
       });
   }, []);
 
   return (
     <MainLayout>
-      {/* Hero with background */}
       <section
         className="relative section-gap pb-8"
         style={{
@@ -221,19 +249,12 @@ export default function CatalogPage() {
 
       <div className="gold-divider mx-4 md:mx-8" />
 
-      {/* Products Grid */}
       <section className="section-gap pt-10">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {productsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="gold-border bg-card h-96 animate-pulse" />
-              ))}
-            </div>
-          ) : products.length === 0 ? (
+          {products.length === 0 ? (
             <p className="text-muted-foreground text-sm">No products available yet.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {products.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -242,7 +263,6 @@ export default function CatalogPage() {
         </div>
       </section>
 
-      {/* Compliance note */}
       <section className="pb-24">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="gold-border bg-card p-6 flex items-start gap-4">
