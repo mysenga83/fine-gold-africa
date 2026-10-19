@@ -13,7 +13,7 @@ interface Slide {
   link_url?: string;
 }
 
-// Default slides shown before DB data loads or when DB is empty
+// Default slides shown before DB data loads or when DB is empty (Gold Nuggets removed)
 const DEFAULT_SLIDES: Slide[] = [
   {
     id: 'd1',
@@ -28,14 +28,6 @@ const DEFAULT_SLIDES: Slide[] = [
     title: 'Refined Gold Bars — 99.99% Purity',
     subtitle: 'Direct from Verified African Refineries',
     media_url: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/k.jpg',
-    media_type: 'image',
-    link_url: '/catalog',
-  },
-  {
-    id: 'd3',
-    title: 'Gold Nuggets & Alluvial Gold Dust',
-    subtitle: 'Sourced from Uganda, DRC & East African Mines',
-    media_url: 'https://miaoda-conversation-file.s3cdn.medo.dev/user-aau54i87abk0/app-csclqvxoqsqp/20260708/b.jpg',
     media_type: 'image',
     link_url: '/catalog',
   },
